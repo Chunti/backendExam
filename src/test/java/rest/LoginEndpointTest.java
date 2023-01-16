@@ -39,7 +39,6 @@ public class LoginEndpointTest {
 
     @BeforeAll
     public static void setUpClass() {
-        //This method must be called before you request the EntityManagerFactory
         EMF_Creator.startREST_TestWithDB();
         emf = EMF_Creator.createEntityManagerFactoryForTest();
 
@@ -52,7 +51,6 @@ public class LoginEndpointTest {
 
     @AfterAll
     public static void closeTestServer() {
-        //Don't forget this, if you called its counterpart in @BeforeAll
         EMF_Creator.endREST_TestWithDB();
         
         httpServer.shutdownNow();
@@ -71,11 +69,11 @@ public class LoginEndpointTest {
 
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
-            User user = new User("user", "test");
+            User user = new User("user", "test", 20202020,"user@user.dk", "OK");
             user.addRole(userRole);
-            User admin = new User("admin", "test");
+            User admin = new User("admin", "test", 30303030,"admin@admin.dk", "OK");
             admin.addRole(adminRole);
-            User both = new User("user_admin", "test");
+            User both = new User("user_admin", "test", 40404040,"user_admin@user_admin.dk", "OK");
             both.addRole(userRole);
             both.addRole(adminRole);
             em.persist(userRole);
@@ -94,12 +92,11 @@ public class LoginEndpointTest {
     private static String securityToken;
 
     //Utility method to login and set the returned securityToken
-    private static void login(String username, String password) {
-        String json = String.format("{\"username\": \"%s\", \"password\": \"%s\"}", username, password);
+    private static void login(String email, String password) {
+        String json = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
         securityToken = given()
                 .contentType("application/json")
                 .body(json)
-                //.when().post("/api/login")
                 .when().post("/login")
                 .then()
                 .extract().path("token");
@@ -127,7 +124,10 @@ public class LoginEndpointTest {
 
     @Test
     public void testRestForAdmin() {
-        login("admin", "test");
+        String email = "admin@admin.dk";
+        String password = "test";
+
+        login(email, password);
         given()
                 .contentType("application/json")
                 .accept(ContentType.JSON)
@@ -135,24 +135,30 @@ public class LoginEndpointTest {
                 .when()
                 .get("/info/admin").then()
                 .statusCode(200)
-                .body("username", equalTo("admin"));
+                .body("email", equalTo(email));
     }
 
     @Test
     public void testRestForUser() {
-        login("user", "test");
+        String email = "user@user.dk";
+        String password = "test";
+        login(email, password);
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
                 .when()
                 .get("/info/user").then()
                 .statusCode(200)
-                .body("msg", equalTo("Hello to User: user"));
+                .body("msg", equalTo("Hello to User: " + email));
     }
 
     @Test
     public void testAutorizedUserCannotAccesAdminPage() {
-        login("user", "test");
+
+        String email = "user@user.dk";
+        String password = "test";
+
+        login(email, password);
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
@@ -163,7 +169,11 @@ public class LoginEndpointTest {
 
     @Test
     public void testAutorizedAdminCannotAccesUserPage() {
-        login("admin", "test");
+
+        String email = "admin@admin.dk";
+        String password = "test";
+
+        login(email, password);
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
@@ -174,7 +184,11 @@ public class LoginEndpointTest {
 
     @Test
     public void testRestForMultiRole1() {
-        login("user_admin", "test");
+
+        String email = "user_admin@user_admin.dk";
+        String password = "test";
+
+        login(email, password);
         given()
                 .contentType("application/json")
                 .accept(ContentType.JSON)
@@ -182,19 +196,21 @@ public class LoginEndpointTest {
                 .when()
                 .get("/info/admin").then()
                 .statusCode(200)
-                .body("username", equalTo("user_admin"));
+                .body("email", equalTo(email));
     }
 
     @Test
     public void testRestForMultiRole2() {
-        login("user_admin", "test");
+        String email = "user_admin@user_admin.dk";
+        String password = "test";
+        login(email, password);
         given()
                 .contentType("application/json")
                 .header("x-access-token", securityToken)
                 .when()
                 .get("/info/user").then()
                 .statusCode(200)
-                .body("msg", equalTo("Hello to User: user_admin"));
+                .body("msg", equalTo("Hello to User: " + email));
     }
 
     @Test

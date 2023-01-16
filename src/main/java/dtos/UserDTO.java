@@ -10,7 +10,7 @@ public class UserDTO {
     List<String> roles;
 
     public UserDTO(User user) {
-        this.name = user.getUserName();
+        this.name = user.getName();
         this.roles = user.getRolesAsStrings();
     }
 

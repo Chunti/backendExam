@@ -16,7 +16,7 @@ import java.util.List;
 public class Token {
     public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
 
-    public static SignedJWT createToken(String username, List<String> roles) throws JOSEException {
+    public static SignedJWT createToken(String email, List<String> roles) throws JOSEException {
         StringBuilder res = new StringBuilder();
         for (String string : roles) {
             res.append(string);
@@ -27,8 +27,8 @@ public class Token {
         JWSSigner signer = new MACSigner(SharedSecret.getSharedKey());
         Date date = new Date();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
-                .claim("username", username)
+                .subject(email)
+                .claim("email", email)
                 .claim("roles", rolesAsString)
                 .issueTime(date)
                 .expirationTime(new Date(date.getTime() + TOKEN_EXPIRE_TIME))

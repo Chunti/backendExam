@@ -1,7 +1,5 @@
-package facades;
+/*package facades;
 
-import dtos.RenameMeDTO;
-import entities.RenameMe;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -14,7 +12,7 @@ import utils.EMF_Creator;
  *
  * Rename Class to a relevant name Add add relevant facade methods
  */
-public class FacadeExample {
+/*public class FacadeExample {
 
     private static FacadeExample instance;
     private static EntityManagerFactory emf;
@@ -28,7 +26,7 @@ public class FacadeExample {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static FacadeExample getFacadeExample(EntityManagerFactory _emf) {
+   /* public static FacadeExample getFacadeExample(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new FacadeExample();
@@ -58,10 +56,10 @@ public class FacadeExample {
 //        if (rm == null)
 //            throw new RenameMeNotFoundException("The RenameMe entity with ID: "+id+" Was not found");
         return new RenameMeDTO(rm);
-    }
-    
+    }*/
+
     //TODO Remove/Change this before use
-    public long getRenameMeCount(){
+   /* public long getRenameMeCount(){
         EntityManager em = getEntityManager();
         try{
             long renameMeCount = (long)em.createQuery("SELECT COUNT(r) FROM RenameMe r").getSingleResult();
@@ -85,3 +83,4 @@ public class FacadeExample {
     }
 
 }
+*/

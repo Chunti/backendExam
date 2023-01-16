@@ -56,11 +56,11 @@ public class TokenEndpoint {
                 }
             }
             System.out.println("Token is valid");
-            String username = signedJWT.getJWTClaimsSet().getClaim("username").toString();
-            User user = USER_FACADE.getUser(username);
-            SignedJWT renewedToken = Token.createToken(username, user.getRolesAsStrings());
+            String email = signedJWT.getJWTClaimsSet().getClaim("email").toString();
+            User user = USER_FACADE.getUser(email);
+            SignedJWT renewedToken = Token.createToken(email, user.getRolesAsStrings());
             JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("username", username);
+            responseJson.addProperty("email", email);
             responseJson.addProperty("token", renewedToken.serialize());
             return Response.ok(responseJson.toString()).build();
         } catch (ParseException e) {

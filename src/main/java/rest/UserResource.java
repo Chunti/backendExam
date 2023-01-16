@@ -32,18 +32,21 @@ public class UserResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUser(String jsonString) throws API_Exception {
-        String username, password;
+        String username, password,email,status;
+        int phone;
         List<String> roles = new ArrayList<>();
         try {
-            //her laver vi lidt user entity objekt en dto a la' retning, så den ikke går den ned i databasen for at createUser
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
             username = jsonObject.get("username").getAsString();
             password = jsonObject.get("password").getAsString();
+            phone = jsonObject.get("phone").getAsInt();
+            email = jsonObject.get("email").getAsString();
+            status = jsonObject.get("status").getAsString();
         } catch (Exception e) {
             throw new API_Exception("Malformed JSON Supplied", 400, e);
         }
 
-        UserDTO user = new UserDTO(USER_FACADE.createUser(username, password));
+        UserDTO user = new UserDTO(USER_FACADE.createUser(username,password,phone,email,status));
         String userJSON = GSON.toJson(user);
         System.out.println(userJSON);
         return Response.ok(userJSON).build();

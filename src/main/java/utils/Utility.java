@@ -3,22 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utils;
+/*package utils;
 
-import dtos.RenameMeDTO;
 import java.util.Properties;
 import java.util.Set;
 import com.google.gson.*;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+*/
 /**
  *
  * @author tha
  */
-public class Utility {
+/*public class Utility {
     private static Gson gson = new GsonBuilder().create();
     
     public static void printAllProperties() {
@@ -51,4 +47,4 @@ public class Utility {
         System.out.println(backAgain);
     }
 
-}
+}*/

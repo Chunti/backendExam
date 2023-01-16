@@ -43,9 +43,9 @@ public class UserFacadeTest {
         try {
             em.getTransaction().begin();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
-            em.persist(new User("Zack", "Test123"));
-            em.persist(new User("Rabia", "Test123"));
-            em.persist(new User("Mathias", "Test123"));
+            em.persist(new User("Zack", "Test123",20202020,"test1@test.dk", "OK"));
+            em.persist(new User("Rabia", "Test123",30303030,"test2@test.dk", "OK"));
+            em.persist(new User("Mathias", "Test123",40404040,"test3@test.dk", "OK"));
 
             em.getTransaction().commit();
         } finally {
@@ -61,11 +61,11 @@ public class UserFacadeTest {
     // TODO: Delete or change this method 
     @Test
     public void verifyUser() throws Exception {
-        String name = "Zack";
+        String email = "test1@test.dk";
         String password = "Test123";
 
         // hvis user er null, fejler testen
-        assertNotNull(userFacade.getVeryfiedUser(name,password));
+        assertNotNull(userFacade.getVeryfiedUser(email,password));
 
 
     }

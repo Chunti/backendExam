@@ -32,23 +32,23 @@ public class LoginEndpoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(String jsonString) throws AuthenticationException, API_Exception {
-        String username, password;
+        String email, password;
         try {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
-            username = json.get("username").getAsString();
+            email = json.get("email").getAsString();
             password = json.get("password").getAsString();
 
         } catch (Exception e) {
            throw new API_Exception("Malformed JSON Supplied", 400, e);
         }
-        System.out.println("Username: " + username);
+        System.out.println("email: " + email);
         System.out.println("Password: " + password);
 
         try {
-            UserDTO user = new UserDTO(USER_FACADE.getVeryfiedUser(username, password));
-            SignedJWT token = Token.createToken(username, user.getRoles());
+            UserDTO user = new UserDTO(USER_FACADE.getVeryfiedUser(email, password));
+            SignedJWT token = Token.createToken(email, user.getRoles());
             JsonObject responseJson = new JsonObject();
-            responseJson.addProperty("username", username);
+            responseJson.addProperty("email", email);
             responseJson.addProperty("token", token.serialize());
             return Response.ok(responseJson.toString()).build();
         } catch (JOSEException | AuthenticationException ex) {
