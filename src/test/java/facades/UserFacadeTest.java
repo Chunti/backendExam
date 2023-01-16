@@ -42,7 +42,10 @@ public class UserFacadeTest {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("User.deleteAllRows").executeUpdate();
+            em.createQuery("delete from Match").executeUpdate();
+            em.createQuery("delete from User").executeUpdate();
+            em.createQuery("delete from Role").executeUpdate();
+            em.createQuery("delete from Location").executeUpdate();
             em.persist(new User("Zack", "Test123",20202020,"test1@test.dk", "OK"));
             em.persist(new User("Rabia", "Test123",30303030,"test2@test.dk", "OK"));
             em.persist(new User("Mathias", "Test123",40404040,"test3@test.dk", "OK"));
@@ -66,8 +69,6 @@ public class UserFacadeTest {
 
         // hvis user er null, fejler testen
         assertNotNull(userFacade.getVeryfiedUser(email,password));
-
-
     }
 
 

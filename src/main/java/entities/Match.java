@@ -1,5 +1,6 @@
 package entities;
 
+import javax.json.bind.annotation.JsonbProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -7,31 +8,37 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "`match`")
+@Table(name = "matches")
+@NamedQuery(name = "Matches.deleteAllRows", query = "DELETE FROM Match")
+
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "matchId", nullable = false)
     private Integer id;
 
-    @Size(max = 45)
     @NotNull
-    @Column(name = "oppponentTeam", nullable = false, length = 45)
-    private String oppponentTeam;
-
-    @Size(max = 45)
-    @Column(name = "judge", length = 45)
-    private String judge;
-
-    @Size(max = 45)
-    @Column(name = "type", length = 45)
-    private String type;
-
-    @Column(name = "inDoors")
+    @Column(name = "inDoors", nullable = false)
     private Byte inDoors;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location")
+    @Size(max = 45)
+    @NotNull
+    @Column(name = "opponentTeam", nullable = false, length = 45)
+    private String opponentTeam;
+
+    @Size(max = 45)
+    @NotNull
+    @Column(name = "type", nullable = false, length = 45)
+    private String type;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "judge", nullable = false)
+    private User judge;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "location", nullable = false)
     private Location location;
 
     @ManyToMany
@@ -39,6 +46,18 @@ public class Match {
             joinColumns = @JoinColumn(name = "matchId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> users = new LinkedHashSet<>();
+
+    public Match(String opponentTeam, User judge, String type,  Byte inDoors, Location location) {
+        this.opponentTeam = opponentTeam;
+        this.judge = judge;
+        this.type = type;
+        this.inDoors = inDoors;
+        this.location = location;
+    }
+
+    public Match() {
+    }
+
 
     public Integer getId() {
         return id;
@@ -48,20 +67,20 @@ public class Match {
         this.id = id;
     }
 
-    public String getOppponentTeam() {
-        return oppponentTeam;
+    public Byte getInDoors() {
+        return inDoors;
     }
 
-    public void setOppponentTeam(String oppponentTeam) {
-        this.oppponentTeam = oppponentTeam;
+    public void setInDoors(Byte inDoors) {
+        this.inDoors = inDoors;
     }
 
-    public String getJudge() {
-        return judge;
+    public String getOpponentTeam() {
+        return opponentTeam;
     }
 
-    public void setJudge(String judge) {
-        this.judge = judge;
+    public void setOpponentTeam(String opponentTeam) {
+        this.opponentTeam = opponentTeam;
     }
 
     public String getType() {
@@ -72,12 +91,12 @@ public class Match {
         this.type = type;
     }
 
-    public Byte getInDoors() {
-        return inDoors;
+    public User getJudge() {
+        return judge;
     }
 
-    public void setInDoors(Byte inDoors) {
-        this.inDoors = inDoors;
+    public void setJudge(User judge) {
+        this.judge = judge;
     }
 
     public Location getLocation() {

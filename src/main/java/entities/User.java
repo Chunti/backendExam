@@ -5,6 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 @NamedQuery(name = "User.deleteAllRows", query = "DELETE FROM User")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -33,8 +34,11 @@ public class User {
     @Column(name = "phone")
     private Integer phone;
 
-    @NotNull
+
+
+
     @Size(max = 45)
+    @NotNull
     @Column(name = "email", length = 45)
     private String email;
 
@@ -43,17 +47,37 @@ public class User {
     @Column(name = "status", length = 45)
     private String status;
 
-    @ManyToMany
-    @JoinTable(name = "user_matches",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "matchId"))
-    private Set<Match> matches = new LinkedHashSet<>();
 
     @ManyToMany
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "role_name"))
     private Set<Role> roles = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "user_matches",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "matchId"))
+    private Set<Match> matches = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "judge", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<Match> judge = new LinkedHashSet<>();
+
+    public Set<Match> getJudge() {
+        return judge;
+    }
+
+    public void setJudge(Set<Match> judge) {
+        this.judge = judge;
+    }
+
+    public Set<Match> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(Set<Match> matches) {
+        this.matches = matches;
+    }
 
     public User() {
     }
@@ -126,17 +150,13 @@ public class User {
         this.status = status;
     }
 
-    public Set<Match> getMatches() {
-        return matches;
-    }
 
-    public void setMatches(Set<Match> matches) {
-        this.matches = matches;
-    }
 
     public void addRole(Role userRole) {
         roles.add(userRole);
     }
+
+
 
     public Set<Role> getRoles() {
         return roles;
@@ -145,5 +165,7 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public void addMatch(Match match){ this.matches.add(match); }
 
 }

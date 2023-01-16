@@ -46,8 +46,6 @@ public class UserFacade {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
             query.setParameter("email", email);
             user = query.getSingleResult();
-            //System.out.println("Here in getVeryfiedUser " + user.getUserName() + " " + user.getUserPass());
-            //System.out.println("Here password in getVeryfiedUser " + password + " " + user.verifyPassword(password));
             if (!user.verifyPassword(password)) {
                 throw new AuthenticationException("Invalid user name or password");
             }
