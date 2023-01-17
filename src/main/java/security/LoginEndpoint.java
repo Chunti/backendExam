@@ -33,6 +33,8 @@ public class LoginEndpoint {
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(String jsonString) throws AuthenticationException, API_Exception {
         String email, password;
+
+        System.out.println(jsonString);
         try {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
             email = json.get("email").getAsString();

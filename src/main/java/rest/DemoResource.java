@@ -10,26 +10,21 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
 
 import errorhandling.API_Exception;
 import utils.EMF_Creator;
 import utils.Populator;
 
-/**
- * @author lam@cphbusiness.dk
- */
 @Path("info")
 public class DemoResource {
     
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
-    private final Gson gson = new Gson();
+
+    Gson gson = new Gson();
     @Context
     private UriInfo context;
 
@@ -89,17 +84,19 @@ public class DemoResource {
         return "{\"email\": \"" + thisuser + "\",\"role\":\"" + thisrole + "\"}";
     }
 
-
-
-    @Path("/populate")
     @GET
+    @Path("/populate")
     @Produces({MediaType.APPLICATION_JSON})
-    public void populate() {
+    public Response populate() {
         try {
             Populator.populate();
+            System.out.println("populated");
         } catch (API_Exception e) {
             throw new RuntimeException(e);
         }
+
+        String ok = gson.toJson("OK");
+        return Response.ok(ok).build();
     }
 
 }
