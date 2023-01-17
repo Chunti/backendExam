@@ -6,8 +6,7 @@ import entities.Role;
 import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
+
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -22,7 +21,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItem;
@@ -170,8 +168,8 @@ public class MatchEndpointTest {
                 .statusCode(200)
                 .body("inDoors", hasItem(1))
                 .body("opponentTeam", hasItem("Hillerød - Herlev"))
-                .body("locationAddress", hasItem("Skinderskovvej 31"))
-                .body("locationCity", hasItem("2860 Ballerup"));
+                .body("location.address", hasItem("Skinderskovvej 31"))
+                .body("location.city", hasItem("2860 Ballerup"));
     }
 
     @Test

@@ -73,11 +73,8 @@ public class UserFacade {
 
     public User createUser(String name, String password,int phone,String email,String status) throws API_Exception {
 
-
-        // Construct user:
         User user = new User(name, password,phone,email,status);
 
-        // Persist user to database:
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();

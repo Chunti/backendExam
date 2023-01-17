@@ -4,7 +4,9 @@ import javax.json.bind.annotation.JsonbProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,6 +58,15 @@ public class Match {
     }
 
     public Match() {
+    }
+
+    public List<String> getplayersAsStrings() {
+        if (users.isEmpty()) {
+            return null;
+        }
+        List<String> playersAsStrings = new ArrayList<>();
+        users.forEach((player) -> playersAsStrings.add(player.getEmail()));
+        return playersAsStrings;
     }
 
 
