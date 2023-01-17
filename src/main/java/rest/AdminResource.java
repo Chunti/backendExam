@@ -1,4 +1,4 @@
-package rest;
+//package rest;
 
 
 import com.google.gson.Gson;
@@ -8,7 +8,7 @@ import dtos.UserDTO;
 import entities.Location;
 import entities.User;
 import errorhandling.API_Exception;
-import facades.AdminFacade;
+
 import facades.UserFacade;
 import utils.EMF_Creator;
 
