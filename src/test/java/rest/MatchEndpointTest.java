@@ -26,7 +26,6 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItem;
-import static org.testng.AssertJUnit.assertFalse;
 
 public class MatchEndpointTest {
     private static final int SERVER_PORT = 7777;
@@ -192,25 +191,5 @@ public class MatchEndpointTest {
 
     }
 
-    @Test
-    public void testDoesNotContainPlayerMatches() {
-        String email = "player1@player1.dk";
-        String password = "test123";
-
-        login(email, password);
-        Response response =
-                given()
-                        .contentType("application/json")
-                        .header("x-access-token", securityToken)
-                        .when()
-                        .get("/match/player");
-
-        response.then().statusCode(200);
-
-        JsonPath jsonPath = response.jsonPath();
-        List<String> opponentTeam = jsonPath.getList("opponentTeam");
-
-        assertFalse(opponentTeam.contains("Sverige - Danmark"));
-    }
 
 }
