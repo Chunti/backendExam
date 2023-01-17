@@ -31,8 +31,6 @@ public class DemoResource {
     @Context
     SecurityContext securityContext;
 
-    public DemoResource() {
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
