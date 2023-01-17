@@ -18,7 +18,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
+import errorhandling.API_Exception;
 import utils.EMF_Creator;
+import utils.Populator;
 
 /**
  * @author lam@cphbusiness.dk
@@ -89,11 +91,15 @@ public class DemoResource {
 
 
 
-//    @Path("/populate")
-//    @GET
-//    @Produces({MediaType.APPLICATION_JSON})
-//    public void populate() {
-//        Populator.populate();
-//    }
+    @Path("/populate")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public void populate() {
+        try {
+            Populator.populate();
+        } catch (API_Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

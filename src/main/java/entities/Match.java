@@ -126,4 +126,6 @@ public class Match {
         this.users = users;
     }
 
+    public void addUsers(User user) {this.users.add(user);}
+
 }

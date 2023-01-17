@@ -1,5 +1,7 @@
 package entities;
 
+import com.google.gson.JsonObject;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -39,7 +41,6 @@ public class Location {
         this.city = city;
         this.condition = condition;
     }
-
     public Location() {
     }
 

@@ -30,5 +30,4 @@ public class MatchDTO implements Serializable {
         this.location = new LocationDTO(match.getLocation());
     }
 
-
 }
