@@ -6,6 +6,8 @@ import entities.Role;
 import entities.User;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -20,9 +22,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItem;
+import static org.testng.AssertJUnit.assertFalse;
 
 public class MatchEndpointTest {
     private static final int SERVER_PORT = 7777;
@@ -169,6 +173,44 @@ public class MatchEndpointTest {
                 .body("opponentTeam", hasItem("Hillerød - Herlev"))
                 .body("locationAddress", hasItem("Skinderskovvej 31"))
                 .body("locationCity", hasItem("2860 Ballerup"));
+    }
+
+    @Test
+    public void testGetPlayerMatches() {
+        String email = "player1@player1.dk";
+        String password = "test123";
+
+        login(email, password);
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/match/player").then()
+                .statusCode(200)
+                .body("opponentTeam", hasItem("Hillerød - Herlev"))
+                .body("opponentTeam", hasItem("Århus - København"));
+
+    }
+
+    @Test
+    public void testDoesNotContainPlayerMatches() {
+        String email = "player1@player1.dk";
+        String password = "test123";
+
+        login(email, password);
+        Response response =
+                given()
+                        .contentType("application/json")
+                        .header("x-access-token", securityToken)
+                        .when()
+                        .get("/match/player");
+
+        response.then().statusCode(200);
+
+        JsonPath jsonPath = response.jsonPath();
+        List<String> opponentTeam = jsonPath.getList("opponentTeam");
+
+        assertFalse(opponentTeam.contains("Sverige - Danmark"));
     }
 
 }

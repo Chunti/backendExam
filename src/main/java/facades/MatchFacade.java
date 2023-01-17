@@ -47,6 +47,22 @@ public class MatchFacade {
         return matches;
     }
 
+    public List<Match> getMatchesForPlayer(int userId) throws NotFoundException {
+        EntityManager em = emf.createEntityManager();
+        List<Match> matches;
+
+        try {
+            TypedQuery<Match> query = em.createQuery("SELECT u.matches FROM User u WHERE u.id = :userId", Match.class);
+            query.setParameter("userId", userId);
+            matches = query.getResultList();
+            if (matches == null) {
+                throw new NotFoundException("No Matches was found");
+            }
+        } finally {
+            em.close();
+        }
+        return matches;
+    }
 
 
 }

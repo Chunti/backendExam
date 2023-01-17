@@ -58,7 +58,7 @@ public class TokenEndpoint {
             System.out.println("Token is valid");
             String email = signedJWT.getJWTClaimsSet().getClaim("email").toString();
             User user = USER_FACADE.getUser(email);
-            SignedJWT renewedToken = Token.createToken(email, user.getRolesAsStrings());
+            SignedJWT renewedToken = Token.createToken(email, user.getRolesAsStrings(), user.getId());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("email", email);
             responseJson.addProperty("token", renewedToken.serialize());
