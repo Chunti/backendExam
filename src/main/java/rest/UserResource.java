@@ -4,19 +4,20 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dtos.MatchDTO;
 import dtos.UserDTO;
 import entities.User;
 import errorhandling.API_Exception;
+import errorhandling.NotFoundException;
 import facades.UserFacade;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Path("user")
@@ -50,6 +51,22 @@ public class UserResource {
         String userJSON = GSON.toJson(user);
         System.out.println(userJSON);
         return Response.ok(userJSON).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("all")
+    public Response getAllUsers(){
+
+        List<UserDTO> userDTO;
+
+        userDTO = USER_FACADE.getUsers().stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
+
+        String usersJSON = GSON.toJson(userDTO);
+        System.out.println(usersJSON);
+        return Response.ok(usersJSON).build();
     }
 
 }

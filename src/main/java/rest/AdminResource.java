@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dtos.MatchDTO;
 import entities.Location;
+import entities.Role;
 import entities.User;
 import errorhandling.API_Exception;
 import facades.AdminFacade;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Path("admin")
-@RolesAllowed("admin")
+
 public class AdminResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
@@ -41,27 +42,23 @@ public class AdminResource {
     public Response createMatch(String jsonString) throws API_Exception, AuthenticationException {
         String opponentTeam, type;
         byte inDoors;
-        User user;
+        User user,player1,player2;
         Location location;
-        JsonArray playerArray;
-        List<User> players = new ArrayList<>();
         MatchDTO match;
+
+        System.out.println(jsonString);
 
         try {
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
             opponentTeam = jsonObject.get("opponentTeam").getAsString();
-            inDoors = jsonObject.get("inDoors").getAsByte();
+            inDoors = Byte.parseByte(jsonObject.get("inDoors").getAsString());
             type = jsonObject.get("type").getAsString();
-            user = USER_FACADE.getUser(jsonObject.get("judge.email").getAsString());
-            location = LOCATION_FACADE.getLocation(jsonObject.get("location.address").getAsString(),
-                                                    jsonObject.get("location.city").getAsString());
-            playerArray = jsonObject.getAsJsonArray("players");
+            user = USER_FACADE.getUser(jsonObject.get("judge").getAsString());
+            location = LOCATION_FACADE.getLocation(jsonObject.get("location").getAsString());
+            player1 = USER_FACADE.getUser(jsonObject.get("player1").getAsString());
+            player2 = USER_FACADE.getUser(jsonObject.get("player2").getAsString());
 
-
-            for (int i = 0; i < playerArray.size(); i++) {
-                players.add(USER_FACADE.getUser(playerArray.get(i).getAsString()));
-            }
-            match = new MatchDTO(ADMIN_FACADE.createMatch(opponentTeam,user,type,inDoors,location,players.get(0),players.get(1)));
+            match = new MatchDTO(ADMIN_FACADE.createMatch(opponentTeam,user,type,inDoors,location,player1,player2));
 
         } catch (Exception e) {
             throw new API_Exception("Malformed JSON Supplied", 400, e);
@@ -70,5 +67,54 @@ public class AdminResource {
         String matchJSON = GSON.toJson(match);
         System.out.println(matchJSON);
         return Response.ok(matchJSON).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("createplayer")
+    public Response createPlayer(String jsonString) throws API_Exception {
+        String name, userPass, email,status;
+        int phone;
+        User user;
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+            name = jsonObject.get("name").getAsString();
+            userPass = jsonObject.get("userPass").getAsString();
+            phone = jsonObject.get("phone").getAsInt();
+            email = jsonObject.get("email").getAsString();
+            status = jsonObject.get("status").getAsString();
+
+            user = USER_FACADE.createPlayer(name,userPass,phone,email,status);
+
+        } catch (Exception e) {
+            throw new API_Exception("Malformed JSON Supplied", 400, e);
+        }
+
+        String userJSON = GSON.toJson(user);
+        System.out.println(userJSON);
+        return Response.ok(userJSON).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("createlocation")
+    public Response createLocation(String jsonString) throws API_Exception {
+        String address, city, condition;
+        Location location;
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+            address = jsonObject.get("address").getAsString();
+            city = jsonObject.get("city").getAsString();
+            condition = jsonObject.get("condition").getAsString();
+
+            location = LOCATION_FACADE.createLocation(address,city,condition);
+
+        } catch (Exception e) {
+            throw new API_Exception("Malformed JSON Supplied", 400, e);
+        }
+
+        String locationJSON = GSON.toJson(location);
+        System.out.println(locationJSON);
+        return Response.ok(locationJSON).build();
     }
 }

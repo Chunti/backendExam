@@ -35,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(rest.UserResource.class);
         resources.add(rest.MatchResource.class);
         resources.add(rest.AdminResource.class);
+        resources.add(rest.LocationResource.class);
 
     }
     

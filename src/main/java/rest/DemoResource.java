@@ -91,7 +91,6 @@ public class DemoResource {
     public Response populate() {
         try {
             Populator.populate();
-            System.out.println("populated");
         } catch (API_Exception e) {
             throw new RuntimeException(e);
         }

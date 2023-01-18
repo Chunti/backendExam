@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class MatchDTO implements Serializable {
 
+    int id;
+
     byte inDoors;
     String opponentTeam;
     List<String> players;
@@ -22,6 +24,7 @@ public class MatchDTO implements Serializable {
     LocationDTO location;
 
     public MatchDTO(Match match) {
+        this.id = match.getId();
         this.inDoors = match.getInDoors();
         this.opponentTeam = match.getOpponentTeam();
         this.type = match.getType();

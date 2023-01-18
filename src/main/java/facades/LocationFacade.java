@@ -1,13 +1,14 @@
 package facades;
 
 import entities.Location;
-import entities.User;
 import errorhandling.API_Exception;
 import security.errorhandling.AuthenticationException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class LocationFacade {
 
@@ -30,14 +31,13 @@ public class LocationFacade {
         return instance;
     }
 
-    public Location getLocation(String address, String city) throws AuthenticationException {
+    public Location getLocation(String address) throws AuthenticationException {
         EntityManager em = emf.createEntityManager();
 
         Location location;
         try {
-            TypedQuery<Location> query = em.createQuery("SELECT l FROM Location l WHERE l.address = :address AND l.city = :city", Location.class);
+            TypedQuery<Location> query = em.createQuery("SELECT l FROM Location l WHERE l.address = :address ", Location.class);
             query.setParameter("address", address);
-            query.setParameter("city", city);
             location = query.getSingleResult();
             if (location == null) {
                 throw new AuthenticationException("Invalid user name or password");
@@ -47,6 +47,35 @@ public class LocationFacade {
         }
         return location;
 
+    }
+
+    public List<Location> getLocations() {
+        EntityManager em = emf.createEntityManager();
+        List<Location> locations;
+        try {
+            TypedQuery<Location> query = em.createQuery("SELECT l FROM Location l", Location.class);
+            locations = query.getResultList();
+        } finally {
+            em.close();
+        }
+        return locations;
+    }
+
+    public Location createLocation(String address, String city, String condition) throws API_Exception {
+        Location location = new Location(address,city,condition);
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            em.persist(location);
+            em.getTransaction().commit();
+        }catch (PersistenceException e){
+            throw new API_Exception("Could not create location", 500, e);
+        }finally {
+            em.close();
+        }
+
+        return location;
     }
 }
 

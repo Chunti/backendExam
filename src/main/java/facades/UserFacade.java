@@ -71,6 +71,18 @@ public class UserFacade {
         return user;
     }
 
+    public List<User> getUsers() {
+        EntityManager em = emf.createEntityManager();
+        List<User> users;
+        try {
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u", User.class);
+            users = query.getResultList();
+        } finally {
+            em.close();
+        }
+        return users;
+    }
+
     public User createUser(String name, String password,int phone,String email,String status) throws API_Exception {
 
         User user = new User(name, password,phone,email,status);
@@ -93,6 +105,29 @@ public class UserFacade {
         }
 
         return user;
+    }
+    public User createPlayer(String name, String password,int phone,String email,String status) throws API_Exception {
+
+        User player = new User(name, password,phone,email,status);
+
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(player);
+            Role role = em.find(Role.class, "player");
+            if (role == null) {
+                role = new Role("player");
+                em.persist(role);
+            }
+            player.addRole(role);
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            throw new API_Exception("Could not create user", 500, e);
+        } finally {
+            em.close();
+        }
+
+        return player;
     }
 
 }

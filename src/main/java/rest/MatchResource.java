@@ -60,10 +60,10 @@ public class MatchResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("player")
-    @RolesAllowed("player")
     public Response PlayerMatches(@HeaderParam("x-access-token") String token)throws Exception {
 
 
+        System.out.println(token);
         SignedJWT jwt = SignedJWT.parse(token);
         JWTClaimsSet claims = jwt.getJWTClaimsSet();
         int userId = claims.getIntegerClaim("id");
@@ -77,7 +77,6 @@ public class MatchResource {
             throw new RuntimeException(e);
         }
         String matchesJSON = GSON.toJson(matchDTOs);
-        System.out.println(matchesJSON);
         return Response.ok(matchesJSON).build();
     }
 

@@ -26,6 +26,7 @@ public class UserFacadeTest {
 
     @BeforeAll
     public static void setUpClass() {
+
        emf = EMF_Creator.createEntityManagerFactoryForTest();
         userFacade = UserFacade.getUserFacade(emf);
     }
